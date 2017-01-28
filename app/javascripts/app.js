@@ -1,5 +1,6 @@
 var accounts;
 var account;
+var currentRole;
 
 window.onload = function() {
   web3.eth.getAccounts(function(err, accs) {
@@ -15,6 +16,10 @@ window.onload = function() {
 
     accounts = accs;
     account = accounts[0];
+
+    Shipia.deployed().getRole(account).then(function(role) {
+       currentRole = role.toNumber();
+    });
   });
 };
 

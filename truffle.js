@@ -1,6 +1,8 @@
 module.exports = {
   build: {
     "index.html": "index.html",
+    "buyer.html": "buyer.html",
+    "seller.html": "seller.html",
     "app.js": [
       "javascripts/app.js"
     ],

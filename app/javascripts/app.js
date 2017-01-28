@@ -2,7 +2,19 @@ var accounts;
 var account;
 var currentRole;
 
-window.onload = function() {
+function initSeller() {
+    initCommon('seller');
+}
+
+function intBuyer() {
+    initCommon('buyer');
+}
+
+function initIndex() {
+    initCommon('index');
+}
+
+function initCommon(status) {
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");
@@ -19,6 +31,19 @@ window.onload = function() {
 
     Shipia.deployed().getRole(account).then(function(role) {
        currentRole = role.toNumber();
+       switch(currentRole) {
+           case 1 : if(status !== 'buyer') {
+               window.location = 'buyer.html';
+           }
+           break;
+           case 2 : if(status !== 'seller') {
+               window.location = 'seller.html';
+           }
+           break;
+           default:
+               alert('unknown role id:' + currentRole);
+               break;
+       }
     });
   });
 };

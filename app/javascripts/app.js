@@ -25,7 +25,6 @@ function init() {
         shipia.setRole("0x0aA7511BA4FE893a3d2D68F295eB052543Df9E9F".toLowerCase(), 2, {from:web3.eth.defaultAccount});
         shipia.setRole("0x37c6194E43a80F35B7B0A15B6635F9367F00073e".toLowerCase(), 3, {from:web3.eth.defaultAccount});
     });
-
 }
 
 function createSale() {
@@ -36,6 +35,7 @@ function createSale() {
   var description = $("#cargo").val();
 
   console.log("createSale:", shipia, buyer, seller, price, description);
-  shipia.initSale(buyer, seller, price, description, {from:web3.eth.defaultAccount});
-
+  shipia.initSale(buyer, seller, price, description, {from:web3.eth.defaultAccount}).then(function() {
+      console.log('sale created!');
+  });
 }

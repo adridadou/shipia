@@ -69,6 +69,13 @@ function initCommon() {
   });
 }
 
+function reset() {
+    var shipia = Shipia.deployed();
+    shipia.reset({from:web3.eth.defaultAccount}).then(function() {
+       console.log('reset!');
+    });
+}
+
 function init() {
     var shipia = Shipia.deployed();
     shipia.reset({from:web3.eth.defaultAccount}).then(function() {
@@ -154,7 +161,7 @@ function createBill() {
     console.log("createBill:", shipia);
     shipia.getSeller().then(function(owner) {
         shipia.createBill(owner, {from: web3.eth.defaultAccount}).then(function(){
-            alert('bill created');
+            window.location.reload();
         });
     });
 }
@@ -164,7 +171,7 @@ function transferBill() {
     console.log("transferBill:", shipia);
     shipia.getBuyer().then(function(owner){
         shipia.transferBill(owner, {from: web3.eth.defaultAccount}).then(function(){
-            alert('bill transfered!');
+            window.location.reload();
         });
     });
 }

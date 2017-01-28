@@ -110,3 +110,21 @@ function fullReport() {
         console.log('price:' + r.toNumber());
     })
 }
+
+function createBill() {
+  var shipia = Shipia.deployed();
+  console.log("createBill:", shipia);
+  shipia.createBill(shipia.getBillOwner(), {from:web3.eth.defaultAccount});
+  shipia.setOwner(shipia.getSeller(), {from:web3.eth.defaultAccount}).then(function() {
+  $("#issueOwner").text("Exporter");
+  }); 
+
+
+function transferBill() {
+  var shipia = Shipia.deployed();
+  console.log("transferBill:", shipia);
+  shipia.transferBilll(shipia.getBillOwner(), {from:web3.eth.defaultAccount}); 
+  shipia.withdraw({from:web3.eth.defaultAccount});   
+  shipia.setOwner(shipia.getBuyer(), {from:web3.eth.defaultAccount}).then(function() { 
+  $("#transferOwner").text("Importer");
+  }); 

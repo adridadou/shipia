@@ -21,11 +21,16 @@ function initCommon(status) {
     accounts = accs;
     account = accounts[0];
     var shipia = Shipia.deployed();
-    shipia.getRole(account).then(function(role) {
+    shipia.getRole(web3.eth.defaultAccount).then(function(role) {
        currentRole = role.toNumber();
-
        switch(currentRole) {
            case 1 : $("#exporterButton").hide();
+               shipia.getBuyer().then(function(r) {
+                   $("#buyer").val(r);
+               });
+               shipia.getSeller().then(function(r) {
+                   $("#seller").val(r);
+               });
                shipia.getPrice().then(function(r) {
                    $("#price").val(r.toNumber());
                });
@@ -127,19 +132,26 @@ function fullReport() {
 }
 
 function createBill() {
-  var shipia = Shipia.deployed();
-  console.log("createBill:", shipia);
-  shipia.createBill(shipia.getBillOwner(), {from:web3.eth.defaultAccount});
-  shipia.setOwner(shipia.getSeller(), {from:web3.eth.defaultAccount}).then(function() {
-  $("#issueOwner").text("Exporter");
-  }); 
-
+    var shipia = Shipia.deployed();
+    console.log("createBill:", shipia);
+    shipia.getSeller().then(function(owner) {
+        shipia.createBill(owner, {from: web3.eth.defaultAccount}).then(function(){
+            alert('bill created');
+        });
+    });
+}
 
 function transferBill() {
-  var shipia = Shipia.deployed();
-  console.log("transferBill:", shipia);
-  shipia.transferBilll(shipia.getBillOwner(), {from:web3.eth.defaultAccount}); 
-  shipia.withdraw({from:web3.eth.defaultAccount});   
-  shipia.setOwner(shipia.getBuyer(), {from:web3.eth.defaultAccount}).then(function() { 
-  $("#transferOwner").text("Importer");
-  }); 
+    var shipia = Shipia.deployed();
+    console.log("transferBill:", shipia);
+    shipia.getBuyer().then(function(owner){
+        shipia.transferBill(owner, {from: web3.eth.defaultAccount}).then(function(){
+            alert('bill transfered!');
+        });
+    });
+}
+
+function withdraw(){
+    var shipia = Shipia.deployed();
+    shipia.withdraw({from: web3.eth.defaultAccount});
+}

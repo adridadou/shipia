@@ -1,9 +1,9 @@
 module.exports = {
   build: {
     "index.html": "index.html",
-    "buyer.html": "buyer.html",
-    "seller.html": "seller.html",
-    "app.js": [
+    "issue.html": "issue.html",
+    "transfer.html": "transfer.html",
+      "app.js": [
       "javascripts/app.js"
     ],
     "app.css": [

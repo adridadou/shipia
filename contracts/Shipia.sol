@@ -10,7 +10,7 @@ contract Shipia {
     mapping(address => UserRole) roles;
 
     enum UserRole {Unknown, Buyer, Seller, Shipping}
-    enum ContractStatus {Unknown, Initialized, Accepted, Shipped, Done}
+    enum ContractStatus {Unknown,Draft, Initialized, Accepted, Shipped, Done}
 
     modifier ownerOnly {
         if(msg.sender != owner) throw;
@@ -28,11 +28,20 @@ contract Shipia {
     }
 
     function Shipia() {
-        owner = msg.sender;
+        status = ContractStatus.Draft;
+    }
+
+    function reset() ownerOnly {
+        status = ContractStatus.Unknown;
+        price = 0;
+        billOwner = 0x0;
+        description = "";
+
     }
 
     function initSale(address seller, address buyer, uint _price, string cargoDescription) roleOnly(buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
         if(msg.sender != seller) throw;
+        if(status != ContractStatus.Draft) throw;
         price = _price;
         description = cargoDescription;
         status = ContractStatus.Initialized;
@@ -80,7 +89,7 @@ contract Shipia {
         return description;
     }
 
-    function setRole(address user, UserRole role) ownerOnly{
+    function setRole(address user, UserRole role) {
         roles[user] = role;
     }
 
@@ -98,5 +107,11 @@ contract Shipia {
 
     function getOwner() constant returns (address) {
         return owner;
+    }
+
+    function setOwner(address newOwner) {
+        if(owner == 0x0 || owner == msg.sender) {
+            owner = newOwner;
+        }
     }
 }

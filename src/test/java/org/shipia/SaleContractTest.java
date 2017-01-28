@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
  */
 public class SaleContractTest {
     public static final EthValue PRICE = ether(100);
-    private static final EthValue USED_GAS = wei(1_712_950_000_000_000L);
+    private static final EthValue USED_GAS = wei(1_714_050_000_000_000L);
     private final EthAccount mainAccount = from("mainAccount");
     private final EthAccount buyerAccount = from("buyerAccount");
     private final EthAccount sellerAccount = from("sellerAccount");
@@ -55,7 +55,7 @@ public class SaleContractTest {
     @Test
     public void billLifecycle() throws ExecutionException, InterruptedException {
         initRoles();
-        assertEquals(ContractStatus.Unknown, contracts.get(mainAccount).getContractStatus());
+        assertEquals(ContractStatus.Draft, contracts.get(mainAccount).getContractStatus());
         initSale();
         assertEquals(ContractStatus.Initialized, contracts.get(mainAccount).getContractStatus());
         acceptSale();
@@ -67,7 +67,7 @@ public class SaleContractTest {
         EthValue currentBalance = ethereum.getBalance(sellerAccount);
         contracts.get(sellerAccount).withdraw().get();
 
-        //System.out.println(currentBalance.plus(PRICE).minus(ethereum.getBalance(sellerAccount)));
+        System.out.println(currentBalance.plus(PRICE).minus(ethereum.getBalance(sellerAccount)));
         assertEquals(currentBalance.plus(PRICE).minus(USED_GAS), ethereum.getBalance(sellerAccount));
         assertEquals(ContractStatus.Done, contracts.get(mainAccount).getContractStatus());
     }
@@ -98,6 +98,7 @@ public class SaleContractTest {
     }
 
     private void initRoles() throws InterruptedException, ExecutionException {
+        contracts.get(mainAccount).setOwner(mainAccount).get();
         assertEquals(mainAccount.getAddress(), contracts.get(mainAccount).getOwner());
         contracts.get(mainAccount).setRole(buyerAccount, UserRole.Buyer).get();
         contracts.get(mainAccount).setRole(sellerAccount, UserRole.Seller).get();
@@ -116,11 +117,13 @@ public class SaleContractTest {
         CompletableFuture<Void> transferBill(EthAccount buyerAccount);
         CompletableFuture<Void> withdraw();
         EthAddress getOwner();
+
+        CompletableFuture<Void> setOwner(EthAccount mainAccount);
     }
 
     public enum UserRole {
         Unknown, Buyer, Seller, Shipping
     }
 
-    public enum ContractStatus {Unknown, Initialized, Accepted, Shipped, Done}
+    public enum ContractStatus {Unknown, Draft, Initialized, Accepted, Shipped, Done}
 }

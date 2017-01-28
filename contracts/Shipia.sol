@@ -27,6 +27,11 @@ contract SaleContract {
         _;
     }
 
+    modifier billOwnerOnly(address addr) {
+        if(addr != billOwner) throw;
+        _;
+    }
+
     modifier roleOnly(address addr, UserRole role) {
         if(roles[addr] != role) throw;
         _;
@@ -52,9 +57,13 @@ contract SaleContract {
         status = ContractStatus.Accepted;
     }
 
-    function createBill(address billOwner) roleOnly(msg.sender, UserRole.Shipping) roleOnly(billOwner, UserRole.Seller) {
-        billOwner = billOwner;
+    function createBill(address _billOwner) roleOnly(msg.sender, UserRole.Shipping) roleOnly(_billOwner, UserRole.Seller) {
+        billOwner = _billOwner;
         status = ContractStatus.Shipped;
+    }
+
+    function transferBill(address transferTo) billOwnerOnly(msg.sender) {
+        billOwner = transferTo;
     }
 
     function getPrice() constant returns (uint) {

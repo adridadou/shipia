@@ -1,14 +1,12 @@
+
+
 body {
-  margin-left: 25%;
-  margin-right: 25%;
-  margin-top: 10%;
+  margin:0;
+  padding:0;
   font-family: "Open Sans", sans-serif;
 }
 
-label {
-  display: inline-block;
-  width: 100px;
-}
+
 
 input {
   width: 500px;
@@ -47,20 +45,43 @@ h3 {
   color: black;
 }
 
-.shipia-container {
-   border: 1px solid #DDDDDD;
-   width: 200px;
-   height: 200px;
-   position: relative;
+
+#transfer-wrapper{
+    height: 1462px;
+    background: url(../transfer.png) no-repeat top center;
+    position: relative;
 }
-.shipia-tag {
-   float: left;
-   position: absolute;
-   left: 100px;
-   top: 0px;
-   z-index: 1000;
-   background-color: #92AD40;
-   padding: 5px;
-   color: #FFFFFF;
-   font-weight: bold;
+
+.transfer-button{
+    position: absolute;
+    top:300px;
+    left:50%;
+    margin-left:-380px;
+    width:370px;
+    height:52px;
+    border:0;
+    background-color: #55B636;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    font-size: 16px;
+    border-radius:4px;
+}
+.transfer-button:hover{
+    background-color:#017157;
+    cursor: pointer;
+}
+
+.transfer-badge {
+    position: absolute;
+    top:217px;
+    left:50%;
+    margin-left:-173px;
+    width:100px;
+    height:22px;
+    border:0;
+    background-color: #1791D7;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    font-size: 12px;
+    border-radius:4px;
 }

@@ -1,0 +1,115 @@
+body{
+    margin:0;
+    padding:0;
+}
+#index-wrapper{
+    height: 1669px;
+    background: url(../index.jpg) no-repeat top center;
+    position: relative;
+}
+*{
+    outline: none;
+}
+button.green-left{
+    position: absolute;
+    top:1477px;
+    left:50%;
+    margin-left:-236px;
+    width:212px;
+    height:52px;
+    border:0;
+    background-color: #55B636;
+    color: #FFFFFF;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-radius:4px;
+}
+button.green-left:hover{
+    background-color:#017157;
+    cursor: pointer;
+}
+button.green-right{
+    position: absolute;
+    top:1477px;
+    left:50%;
+    margin-left:42px;
+    width:212px;
+    height:52px;
+    border:0;
+    background-color: #55B636; /*#9B9B9B;*/
+    color: #FFFFFF;
+    text-transform: uppercase;
+    font-size: 14px;
+    border-radius:4px;
+}
+button.green-right:hover{
+    background-color:#017157; /*7D796F;*/
+    cursor: pointer;
+}
+.exporter{
+    position: absolute;
+    top: 442px;
+    left: 50%;
+    margin-left: -248px;
+    width: 515px;
+    height: 20px;
+    border: 0;
+    background-color: #fff;
+    color: #A1A1A1;
+    font-size: 16px;
+    font-weight: light;
+}
+.importer{
+    position: absolute;
+    top: 745px;
+    left: 50%;
+    margin-left: -248px;
+    width: 515px;
+    height: 20px;
+    border: 0;
+    background-color: #fff;
+    color: #A1A1A1;
+    font-size: 16px;
+    font-weight: light;
+}
+.cargo{
+    position: absolute;
+    top: 910px;
+    left: 50%;
+    margin-left: -248px;
+    width: 515px;
+    height: 20px;
+    border: 0;
+    background-color: #fff;
+    color: #A1A1A1;
+    font-size: 16px;
+    font-weight: light;
+}
+.price{
+    position: absolute;
+    top: 1058px;
+    left: 50%;
+    margin-left: -248px;
+    width: 200px;
+    height: 20px;
+    border: 0;
+    background-color: #fff;
+    color: #A1A1A1;
+    font-size: 16px;
+    font-weight: light;
+}
+.index-login-badge {
+    position: absolute;
+    top:20px;
+    left:50%;
+    margin-left:128px;
+    width:272px;
+    height:25px;
+    border:0;
+    background-color: #FFFFFF;
+    color: #333333;
+    font-size: 14px;
+    font-weight: bold;
+    font-style: italic;
+    border-radius:4px;
+}

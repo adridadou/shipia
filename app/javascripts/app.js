@@ -17,3 +17,16 @@ window.onload = function() {
     account = accounts[0];
   });
 };
+
+
+function createSale() {
+  var shipia = Shipia.deployed();
+  var buyer = $("#buyer").val();
+  var seller = $("#seller").val();
+  var price = $("#price").val();
+  var description = $("#cargo").val();
+
+  console.log("createSale:", shipia, buyer, seller, price, description);
+  shipia.initSale(buyer, seller, price, description);
+
+}

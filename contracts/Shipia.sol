@@ -63,6 +63,7 @@ contract Shipia {
                 if(!msg.sender.send(this.balance)){
                     throw;
                 }
+                status = ContractStatus.Done;
             }
         }
 

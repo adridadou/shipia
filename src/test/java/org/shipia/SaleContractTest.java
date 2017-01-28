@@ -18,6 +18,7 @@ import java.util.concurrent.ExecutionException;
 
 import static org.adridadou.ethereum.keystore.AccountProvider.from;
 import static org.adridadou.ethereum.values.EthValue.ether;
+import static org.adridadou.ethereum.values.EthValue.wei;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.fail;
 
@@ -25,6 +26,8 @@ import static org.junit.Assert.fail;
  * Created by davidroon on 28.01.17.
  */
 public class SaleContractTest {
+    public static final EthValue PRICE = ether(100);
+    private static final EthValue USED_GAS = wei(1_712_950_000_000_000L);
     private final EthAccount mainAccount = from("mainAccount");
     private final EthAccount buyerAccount = from("buyerAccount");
     private final EthAccount sellerAccount = from("sellerAccount");
@@ -61,11 +64,12 @@ public class SaleContractTest {
         assertEquals(ContractStatus.Shipped, contracts.get(mainAccount).getContractStatus());
         contracts.get(sellerAccount).transferBill(buyerAccount).get();
         assertEquals(buyerAccount.getAddress(), contracts.get(sellerAccount).getBillOwner());
-
-
         EthValue currentBalance = ethereum.getBalance(sellerAccount);
         contracts.get(sellerAccount).withdraw().get();
 
+        //System.out.println(currentBalance.plus(PRICE).minus(ethereum.getBalance(sellerAccount)));
+        assertEquals(currentBalance.plus(PRICE).minus(USED_GAS), ethereum.getBalance(sellerAccount));
+        assertEquals(ContractStatus.Done, contracts.get(mainAccount).getContractStatus());
     }
 
     private void createBill() throws InterruptedException, ExecutionException {
@@ -86,7 +90,7 @@ public class SaleContractTest {
     }
 
     private void initSale() throws InterruptedException, ExecutionException {
-        contracts.get(sellerAccount).initSale(sellerAccount, buyerAccount, ether(100), "50,000,000 roses").get();
+        contracts.get(sellerAccount).initSale(sellerAccount, buyerAccount, PRICE, "50,000,000 roses").get();
         assertEquals(UserRole.Seller, contracts.get(sellerAccount).getRole(sellerAccount));
         assertEquals(UserRole.Buyer, contracts.get(sellerAccount).getRole(buyerAccount));
         assertEquals(UserRole.Shipping, contracts.get(sellerAccount).getRole(shippingAccount));

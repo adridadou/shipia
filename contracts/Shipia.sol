@@ -42,7 +42,7 @@ contract Shipia {
     }
 
     function initSale(address _seller, address _buyer, uint _price, string cargoDescription) roleOnly(_buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
-        if(msg.sender != seller) throw;
+        if(msg.sender != _seller) throw;
         if(status != ContractStatus.Draft) throw;
         price = _price;
         description = cargoDescription;

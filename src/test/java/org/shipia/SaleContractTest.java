@@ -27,7 +27,7 @@ import static org.junit.Assert.fail;
  */
 public class SaleContractTest {
     public static final EthValue PRICE = ether(100);
-    private static final EthValue USED_GAS = wei(1_714_050_000_000_000L);
+    private static final EthValue USED_GAS = wei(1_713_900_000_000_000L);
     private final EthAccount mainAccount = from("mainAccount");
     private final EthAccount buyerAccount = from("buyerAccount");
     private final EthAccount sellerAccount = from("sellerAccount");

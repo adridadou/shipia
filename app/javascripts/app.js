@@ -74,9 +74,11 @@ function setOwner() {
 
 function setRoles() {
     var shipia = Shipia.deployed();
-    shipia.setRole("0xf280d7eAE02D401CC319a73EFF9d1328AAD60A3D".toLowerCase(), 1, {from:web3.eth.defaultAccount});
-    shipia.setRole("0x0aA7511BA4FE893a3d2D68F295eB052543Df9E9F".toLowerCase(), 2, {from:web3.eth.defaultAccount});
-    shipia.setRole("0x37c6194E43a80F35B7B0A15B6635F9367F00073e".toLowerCase(), 3, {from:web3.eth.defaultAccount});
+    shipia.setRole("0xf280d7eAE02D401CC319a73EFF9d1328AAD60A3D".toLowerCase(), 1, {from:web3.eth.defaultAccount}).then(function(){
+        shipia.setRole("0x0aA7511BA4FE893a3d2D68F295eB052543Df9E9F".toLowerCase(), 2, {from:web3.eth.defaultAccount}).then(function(){
+            shipia.setRole("0x37c6194E43a80F35B7B0A15B6635F9367F00073e".toLowerCase(), 3, {from:web3.eth.defaultAccount});
+        });
+    });
     console.log('setting roles');
 }
 
@@ -88,7 +90,7 @@ function createSale() {
     var description = $("#cargo").val();
 
     console.log("createSale:", seller, buyer, price, description);
-    shipia.initSale(seller, buyer, price, description, {from: web3.eth.defaultAccount}).then(function (err,res) {
+    shipia.initSale(seller, buyer, parseInt(price), description, {from: web3.eth.defaultAccount}).then(function (err,res) {
         console.log(err,res);
         alert('sale created!');
     }).catch(function(err) {

@@ -1,16 +1,6 @@
 pragma solidity ^0.4.8;
 
-// This is just a simple example of a coin-like contract.
-// It is not standards compatible and cannot be expected to talk to other
-// coin/token contracts. If you want to create a standards-compliant
-// token, see: https://github.com/ConsenSys/Tokens. Cheers!
-
-
-contract BillContract {
-
-}
-
-contract SaleContract {
+contract Shipia {
 
     address owner;
     ContractStatus status;
@@ -20,7 +10,7 @@ contract SaleContract {
     mapping(address => UserRole) roles;
 
     enum UserRole {Unknown, Buyer, Seller, Shipping}
-    enum ContractStatus {Unknown, Initialized, Accepted,Shipped, Done}
+    enum ContractStatus {Unknown, Initialized, Accepted, Shipped, Done}
 
     modifier ownerOnly {
         if(msg.sender != owner) throw;
@@ -37,7 +27,7 @@ contract SaleContract {
         _;
     }
 
-    function SaleContract() {
+    function Shipia() {
         owner = msg.sender;
     }
 
@@ -67,6 +57,20 @@ contract SaleContract {
         billOwner = transferTo;
     }
 
+    function withdraw() {
+        if(roles[msg.sender] == UserRole.Seller) {
+            if(status == ContractStatus.Shipped && roles[billOwner] == UserRole.Buyer) {
+                if(!msg.sender.send(this.balance)){
+                    throw;
+                }
+            }
+        }
+
+        if(roles[msg.sender] == UserRole.Buyer) {
+            //Check if it is time to give the money back to the Buyer
+        }
+    }
+
     function getPrice() constant returns (uint) {
         return price;
     }
@@ -89,5 +93,9 @@ contract SaleContract {
 
     function getBillOwner() constant returns (address) {
         return billOwner;
+    }
+
+    function getOwner() constant returns (address) {
+        return owner;
     }
 }

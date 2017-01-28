@@ -44,10 +44,9 @@ public class SaleContractTest {
                 .balance(shippingAccount, ether(1000000000))
                 .build());
 
-        saleContract = ethereum.compile(SoliditySource.from(new File("contracts/Shipia.sol")), "SaleContract").get();
+        saleContract = ethereum.compile(SoliditySource.from(new File("contracts/Shipia.sol")), "Shipia").get();
         saleContractAddress = ethereum.publishContract(saleContract, mainAccount).get();
-        ethereum.createContractProxy(saleContract, saleContractAddress,sellerAccount, SaleContract.class);
-        accounts.forEach(account -> contracts.put(account, ethereum.createContractProxy(saleContract, saleContractAddress,account, SaleContract.class)));
+        accounts.forEach(account -> contracts.put(account, ethereum.createContractProxy(saleContract, saleContractAddress, account, SaleContract.class)));
     }
 
     @Test
@@ -62,6 +61,11 @@ public class SaleContractTest {
         assertEquals(ContractStatus.Shipped, contracts.get(mainAccount).getContractStatus());
         contracts.get(sellerAccount).transferBill(buyerAccount).get();
         assertEquals(buyerAccount.getAddress(), contracts.get(sellerAccount).getBillOwner());
+
+
+        EthValue currentBalance = ethereum.getBalance(sellerAccount);
+        contracts.get(sellerAccount).withdraw().get();
+
     }
 
     private void createBill() throws InterruptedException, ExecutionException {
@@ -90,6 +94,7 @@ public class SaleContractTest {
     }
 
     private void initRoles() throws InterruptedException, ExecutionException {
+        assertEquals(mainAccount.getAddress(), contracts.get(mainAccount).getOwner());
         contracts.get(mainAccount).setRole(buyerAccount, UserRole.Buyer).get();
         contracts.get(mainAccount).setRole(sellerAccount, UserRole.Seller).get();
         contracts.get(mainAccount).setRole(shippingAccount, UserRole.Shipping).get();
@@ -105,6 +110,8 @@ public class SaleContractTest {
         CompletableFuture<Void> createBill(EthAccount seller);
         EthAddress getBillOwner();
         CompletableFuture<Void> transferBill(EthAccount buyerAccount);
+        CompletableFuture<Void> withdraw();
+        EthAddress getOwner();
     }
 
     public enum UserRole {

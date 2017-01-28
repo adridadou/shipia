@@ -41,7 +41,8 @@ contract SaleContract {
         owner = msg.sender;
     }
 
-    function initSale(uint _price, string cargoDescription) roleOnly(msg.sender, UserRole.Seller) {
+    function initSale(address seller, address buyer, uint _price, string cargoDescription) roleOnly(buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
+        if(msg.sender != seller) throw;
         price = _price;
         description = cargoDescription;
         status = ContractStatus.Initialized;

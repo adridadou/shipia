@@ -82,7 +82,7 @@ public class SaleContractTest {
     }
 
     private void initSale() throws InterruptedException, ExecutionException {
-        contracts.get(sellerAccount).initSale(ether(100), "50,000,000 roses").get();
+        contracts.get(sellerAccount).initSale(sellerAccount, buyerAccount, ether(100), "50,000,000 roses").get();
         assertEquals(UserRole.Seller, contracts.get(sellerAccount).getRole(sellerAccount));
         assertEquals(UserRole.Buyer, contracts.get(sellerAccount).getRole(buyerAccount));
         assertEquals(UserRole.Shipping, contracts.get(sellerAccount).getRole(shippingAccount));
@@ -96,7 +96,7 @@ public class SaleContractTest {
     }
 
     public interface SaleContract {
-        CompletableFuture<Void> initSale(EthValue price, String cargoDescription);
+        CompletableFuture<Void> initSale(EthAccount seller, EthAccount buyer, EthValue price, String cargoDescription);
         CompletableFuture<Void> setRole(EthAccount account, UserRole role);
         UserRole getRole(EthAccount account);
         ContractStatus getContractStatus();

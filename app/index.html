@@ -15,5 +15,73 @@
 <!--<body background="BuyPolicy.jpg">-->
 <body onload="initIndex()">
 
+	<div class="row clearfix">
+		<div class="col-md-3 column">
+			<p></p>
+		</div>
+
+		<div class="col-md-6 column">
+		<div class="row clearfix"><h1>Sale Contract</h1></div>
+		<div class="row clearfix"><br><br></div>
+		  <div class="row">
+			<div class="input-group">
+			  <span class="input-group-addon" id="basic-addon1">Seller</span>
+			  <input type="text" class="form-control" placeholder="0x.." aria-describedby="basic-addon1" id ="seller">
+			</div>
+		  </div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Buyer</span>
+				  <input type="text" class="form-control" placeholder="0x.." aria-describedby="basic-addon1" id ="buyer">
+				</div>
+		</div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Price </span>
+				  <input type="text" class="form-control" placeholder="$" aria-describedby="basic-addon1" id ="price">
+				</div>
+		</div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Cargo </span>
+				  <input type="text" class="form-control" placeholder="Cargo description" aria-describedby="basic-addon1" id ="cargo">
+				</div>
+		</div>
+
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+			<div class="col-md-6 column">
+				<a href="#" class="list-group-item list-group-item-warning">
+					<h3>Seller</h3>
+					<button type="button" class="btn btn-success navbar-btn" onClick="createSale()">Create Sale</button>
+				</a>
+			</div>
+			<div class="col-md-6 column yellow">
+				<a href="#" class="list-group-item list-group-item-warning">
+					<h3>Buyer</h3>
+					<button type="button" class="btn btn-success navbar-btn" onClick="acceptSale()">Accept Sale</button>
+				</a>
+			</div>
+		  </div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		</div>
+		</div>
+		<div class="col-md-3 column">
+		</div>
+	</div>
+</div>
 </body>
 </html>

@@ -13,12 +13,31 @@ contract BillContract {
 contract SaleContract {
 
     address owner;
+    ContractStatus status;
     uint price;
-    address buyer;
     string description;
+    mapping(address => UserRole) roles;
+
+    enum UserRole {Unknown, Buyer, Seller, Shipping}
+    enum ContractStatus {Unknown, Initialized, Accepted, Done}
 
     modifier ownerOnly {
         if(msg.sender != owner) throw;
+        _;
+    }
+
+    modifier sellerOnly {
+        if(roles[msg.sender] != UserRole.Seller) throw;
+        _;
+    }
+
+    modifier buyerOnly {
+        if(roles[msg.sender] != UserRole.Buyer) throw;
+        _;
+    }
+
+    modifier shippingOnly {
+        if(roles[msg.sender] != UserRole.Shipping) throw;
         _;
     }
 
@@ -26,18 +45,15 @@ contract SaleContract {
         owner = msg.sender;
     }
 
-    function initSale(address _buyer, uint _price, string cargoDescription) ownerOnly {
-        buyer = _buyer;
+    function initSale(uint _price, string cargoDescription) sellerOnly {
         price = _price;
         description = cargoDescription;
+        status = ContractStatus.Initialized;
     }
 
-    function getSeller() constant returns (address) {
-        return owner;
-    }
-
-    function getBuyer() constant returns (address) {
-        return buyer;
+    function acceptSale() payable buyerOnly {
+        if(msg.value < price) throw;
+        if(msg.value > price) msg.sender.send(msg.value - price);
     }
 
     function getPrice() constant returns (uint) {
@@ -46,5 +62,17 @@ contract SaleContract {
 
     function getDescription() constant returns (string) {
         return description;
+    }
+
+    function setRole(address user, UserRole role) ownerOnly{
+        roles[user] = role;
+    }
+
+    function getRole(address user) constant returns (UserRole) {
+        return roles[user];
+    }
+
+    function getContractStatus() constant returns(ContractStatus) {
+        return status;
     }
 }

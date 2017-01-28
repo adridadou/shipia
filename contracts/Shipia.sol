@@ -27,10 +27,6 @@ contract Shipia {
         _;
     }
 
-    function Shipia() {
-        owner = msg.sender;
-    }
-
     function initSale(address seller, address buyer, uint _price, string cargoDescription) roleOnly(buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
         if(msg.sender != seller) throw;
         price = _price;
@@ -80,7 +76,7 @@ contract Shipia {
         return description;
     }
 
-    function setRole(address user, UserRole role) ownerOnly{
+    function setRole(address user, UserRole role) {
         roles[user] = role;
     }
 
@@ -98,5 +94,11 @@ contract Shipia {
 
     function getOwner() constant returns (address) {
         return owner;
+    }
+
+    function setOwner(address newOwner) {
+        if(owner == 0x0 || owner == msg.sender) {
+            owner = newOwner;
+        }
     }
 }

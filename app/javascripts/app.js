@@ -72,4 +72,16 @@ function createSale() {
   shipia.initSale(buyer, seller, price, description, {from:web3.eth.defaultAccount}).then(function() {
       alert('sale created!');
   });
+
+function acceptSale() {
+  var shipia = Shipia.deployed();
+  var buyer = $("#buyer").val().toLowerCase();
+  var seller = $("#seller").val().toLowerCase();
+  var price = $("#price").val();
+  var description = $("#cargo").val();
+
+  console.log("acceptSale:", shipia, buyer, seller, price, description);
+  shipia.acceptSale({from:web3.eth.defaultAccount}).then(function() {
+      alert('sale accepted!');
+  }); 
 }

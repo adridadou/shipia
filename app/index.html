@@ -1,22 +1,83 @@
-<!DOCTYPE html>
 <html>
-<head>
-  <title>MetaCoin - Default Truffle App</title>
-  <link href='https://fonts.googleapis.com/css?family=Open+Sans:400,700' rel='stylesheet' type='text/css'>
-  <link href="./app.css" rel='stylesheet' type='text/css'>
-  <script src="./app.js"></script>
-</head>
-<body>
-  <h1>MetaCoin</h1>
-  <h2>Example Truffle Dapp</h2>
-  <h3>You have <span class="black"><span id="balance"></span> META</span></h3>
+<header>
+<title>TR H mockup</title>
 
-  <br>
-  <h1>Send</h1>
-  <br><label for="amount">Amount:</label><input type="text" id="amount" placeholder="e.g., 95"></input>
-  <br><label for="receiver">To Address:</label><input type="text" id="receiver" placeholder="e.g., 0x93e66d9baea28c17d9fc393b53e3fbdd76899dae"></input>
-  <br><br><button id="send" onclick="sendCoin()">Send MetaCoin</button>
-  <br><br>
-  <span id="status"></span>
+<!-- Latest compiled and minified CSS -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+<!-- Optional theme -->
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+</header>
+<!--<body background="BuyPolicy.jpg">-->
+<body>
+<div class="container-fluid">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<br><br><br>
+		</div>
+	</div>
+
+	<div class="row clearfix">
+		<div class="col-md-3 column">
+			<p></p>
+		</div>
+
+
+
+		<div class="col-md-6 column">
+		<div class="row clearfix"><h1>Sale Contract</h1></div>
+		<div class="row clearfix"><br><br></div>
+		  <div class="row">
+			<div class="input-group">
+			  <span class="input-group-addon" id="basic-addon1">Seller</span>
+			  <input type="text" class="form-control" placeholder="0x.." aria-describedby="basic-addon1" id ="seller">
+			</div>
+		  </div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Buyer</span>
+				  <input type="text" class="form-control" placeholder="0x.." aria-describedby="basic-addon1" id ="buyer">
+				</div>
+		</div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Price </span>
+				  <input type="text" class="form-control" placeholder="$" aria-describedby="basic-addon1" id ="price">
+				</div>
+		</div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+				<div class="input-group">
+				  <span class="input-group-addon" id="basic-addon1">Cargo </span>
+				  <input type="text" class="form-control" placeholder="Cargo description" aria-describedby="basic-addon1" id ="cargo">
+				</div>
+		</div>
+
+
+		<div class="row clearfix"><br><br><br></div>
+
+		  <div class="row">
+			<button type="button" class="btn btn-success navbar-btn" onClick="void()">Sell</button>
+		  </div>
+
+		<div class="row clearfix"><br><br><br></div>
+
+		</div>
+		</div>
+		<div class="col-md-3 column">
+		</div>
+	</div>
+</div>
 </body>
 </html>

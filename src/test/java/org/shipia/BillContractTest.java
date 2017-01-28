@@ -3,8 +3,16 @@ package org.shipia;
 import org.adridadou.ethereum.EthereumFacade;
 import org.adridadou.ethereum.blockchain.TestConfig;
 import org.adridadou.ethereum.provider.EthereumFacadeProvider;
+import org.adridadou.ethereum.values.CompiledContract;
 import org.adridadou.ethereum.values.EthAccount;
+import org.adridadou.ethereum.values.EthAddress;
+import org.adridadou.ethereum.values.SoliditySource;
+import org.junit.Before;
 import org.junit.Test;
+
+import java.io.File;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 import static org.adridadou.ethereum.keystore.AccountProvider.from;
 import static org.adridadou.ethereum.values.EthValue.ether;
@@ -14,23 +22,25 @@ import static org.adridadou.ethereum.values.EthValue.ether;
  */
 public class BillContractTest {
     private final EthAccount mainAccount = from("mainAccount");
-    private final EthAccount insuranceAccountA = from("insuranceAccountA");
-    private final EthAccount insuranceAccountB = from("insuranceAccountB");
-    private final EthAccount retailerAccount = from("retailerAccount");
     private EthereumFacade ethereum;
+    private CompletableFuture<CompiledContract> billContract;
 
-    @Test
+    @Before
     public void before() {
         ethereum = EthereumFacadeProvider.forTest(TestConfig.builder()
                 .balance(mainAccount, ether(1000000000))
-                .balance(insuranceAccountA, ether(1000000000))
-                .balance(insuranceAccountB, ether(1000000000))
-                .balance(retailerAccount, ether(1000000000))
                 .build());
+
+        billContract = ethereum.compile(SoliditySource.from(new File("contracts/Shipia.sol")), "BillContract");
     }
 
     @Test
-    public void billLifecycle() {
+    public void billLifecycle() throws ExecutionException, InterruptedException {
+        CompletableFuture<EthAddress> billContractAddress = ethereum.publishContract(billContract.get(), mainAccount);
 
+    }
+
+    public interface BillContract {
+        CompletableFuture<Void> createBill();
     }
 }

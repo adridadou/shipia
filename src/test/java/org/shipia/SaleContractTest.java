@@ -56,6 +56,12 @@ public class SaleContractTest {
         assertEquals(ContractStatus.Unknown, contracts.get(mainAccount).getContractStatus());
         initSale();
         assertEquals(ContractStatus.Initialized, contracts.get(mainAccount).getContractStatus());
+        acceptSale();
+        assertEquals(ContractStatus.Accepted, contracts.get(mainAccount).getContractStatus());
+
+    }
+
+    private void acceptSale() throws InterruptedException, ExecutionException {
         try {
             contracts.get(buyerAccount).acceptSale().with(ether(50)).get();
             fail("it should throw because not enough money is being sent");
@@ -65,7 +71,6 @@ public class SaleContractTest {
 
         contracts.get(buyerAccount).acceptSale().with(ether(150)).get();
         assertEquals(contracts.get(mainAccount).getPrice(), ethereum.getBalance(saleContractAddress));
-
     }
 
     private void initSale() throws InterruptedException, ExecutionException {

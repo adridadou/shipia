@@ -54,6 +54,7 @@ contract SaleContract {
     function acceptSale() payable buyerOnly {
         if(msg.value < price) throw;
         if(msg.value > price) msg.sender.send(msg.value - price);
+        status = ContractStatus.Accepted;
     }
 
     function getPrice() constant returns (uint) {

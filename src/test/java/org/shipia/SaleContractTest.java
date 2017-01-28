@@ -58,7 +58,14 @@ public class SaleContractTest {
         assertEquals(ContractStatus.Initialized, contracts.get(mainAccount).getContractStatus());
         acceptSale();
         assertEquals(ContractStatus.Accepted, contracts.get(mainAccount).getContractStatus());
+        createBill();
+        assertEquals(ContractStatus.Shipped, contracts.get(mainAccount).getContractStatus());
 
+    }
+
+    private void createBill() throws InterruptedException, ExecutionException {
+        contracts.get(shippingAccount).createBill(sellerAccount).get();
+        assertEquals(sellerAccount.getAddress(), contracts.get(sellerAccount).getBillOwner());
     }
 
     private void acceptSale() throws InterruptedException, ExecutionException {
@@ -94,11 +101,13 @@ public class SaleContractTest {
         ContractStatus getContractStatus();
         EthValue getPrice();
         Payable<Void> acceptSale();
+        CompletableFuture<Void> createBill(EthAccount seller);
+        EthAddress getBillOwner();
     }
 
     public enum UserRole {
         Unknown, Buyer, Seller, Shipping
     }
 
-    public enum ContractStatus {Unknown, Initialized, Accepted, Done}
+    public enum ContractStatus {Unknown, Initialized, Accepted, Shipped, Done}
 }

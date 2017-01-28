@@ -16,28 +16,19 @@ contract SaleContract {
     ContractStatus status;
     uint price;
     string description;
+    address billOwner;
     mapping(address => UserRole) roles;
 
     enum UserRole {Unknown, Buyer, Seller, Shipping}
-    enum ContractStatus {Unknown, Initialized, Accepted, Done}
+    enum ContractStatus {Unknown, Initialized, Accepted,Shipped, Done}
 
     modifier ownerOnly {
         if(msg.sender != owner) throw;
         _;
     }
 
-    modifier sellerOnly {
-        if(roles[msg.sender] != UserRole.Seller) throw;
-        _;
-    }
-
-    modifier buyerOnly {
-        if(roles[msg.sender] != UserRole.Buyer) throw;
-        _;
-    }
-
-    modifier shippingOnly {
-        if(roles[msg.sender] != UserRole.Shipping) throw;
+    modifier roleOnly(address addr, UserRole role) {
+        if(roles[addr] != role) throw;
         _;
     }
 
@@ -45,16 +36,25 @@ contract SaleContract {
         owner = msg.sender;
     }
 
-    function initSale(uint _price, string cargoDescription) sellerOnly {
+    function initSale(uint _price, string cargoDescription) roleOnly(msg.sender, UserRole.Seller) {
         price = _price;
         description = cargoDescription;
         status = ContractStatus.Initialized;
     }
 
-    function acceptSale() payable buyerOnly {
+    function acceptSale() payable roleOnly(msg.sender, UserRole.Buyer) {
         if(msg.value < price) throw;
-        if(msg.value > price) msg.sender.send(msg.value - price);
+        if(msg.value > price) {
+            if(!msg.sender.send(msg.value - price)){
+                throw;
+            }
+        }
         status = ContractStatus.Accepted;
+    }
+
+    function createBill(address billOwner) roleOnly(msg.sender, UserRole.Shipping) roleOnly(billOwner, UserRole.Seller) {
+        billOwner = billOwner;
+        status = ContractStatus.Shipped;
     }
 
     function getPrice() constant returns (uint) {
@@ -75,5 +75,9 @@ contract SaleContract {
 
     function getContractStatus() constant returns(ContractStatus) {
         return status;
+    }
+
+    function getBillOwner() constant returns (address) {
+        return billOwner;
     }
 }

@@ -2,23 +2,6 @@ var accounts;
 var account;
 var currentRole;
 
-function initSeller() {
-    initCommon('seller');
-    $("#seller").val(web3.eth.defaultAccount);
-}
-
-function initBuyer() {
-    initCommon('buyer');
-    var shipia = Shipia.deployed();
-    shipia.getPrice().then(function(r) {
-        $("#price").val(r.toNumber());
-    });
-
-    shipia.getDescription().then(function(r) {
-        $("#cargo").val(r);
-    })
-}
-
 function initIndex() {
     initCommon('index');
 }
@@ -37,22 +20,28 @@ function initCommon(status) {
 
     accounts = accs;
     account = accounts[0];
-
-    Shipia.deployed().getRole(account).then(function(role) {
+    var shipia = Shipia.deployed();
+    shipia.getRole(account).then(function(role) {
        currentRole = role.toNumber();
+
        switch(currentRole) {
-           case 1 : if(status !== 'buyer') {
-               window.location = 'buyer.html';
-           }
+           case 1 : $("#exporterButton").hide();
+               shipia.getPrice().then(function(r) {
+                   $("#price").val(r.toNumber());
+               });
+
+               shipia.getDescription().then(function(r) {
+                   $("#cargo").val(r);
+               });
            break;
-           case 2 : if(status !== 'seller') {
-               window.location = 'seller.html';
-           }
+           case 2 : $("#importerButton").hide();
+               $("#seller").val(web3.eth.defaultAccount);
            break;
            default:
-               alert('unknown role id:' + currentRole);
+               console.log('unknown role id:' + currentRole);
                break;
        }
+
     });
   });
 }
@@ -70,6 +59,27 @@ function init() {
 
 }
 
+function setOwner() {
+    var shipia = Shipia.deployed();
+    shipia.getOwner().then(function(r) {
+        console.log('owner:' + r);
+    });
+    shipia.setOwner(web3.eth.defaultAccount, {from:web3.eth.defaultAccount}).then(function(){
+        console.log('set owner done');
+        shipia.getOwner().then(function(r) {
+            console.log('owner:' + r);
+        });
+    });
+}
+
+function setRoles() {
+    var shipia = Shipia.deployed();
+    shipia.setRole("0xf280d7eAE02D401CC319a73EFF9d1328AAD60A3D".toLowerCase(), 1, {from:web3.eth.defaultAccount});
+    shipia.setRole("0x0aA7511BA4FE893a3d2D68F295eB052543Df9E9F".toLowerCase(), 2, {from:web3.eth.defaultAccount});
+    shipia.setRole("0x37c6194E43a80F35B7B0A15B6635F9367F00073e".toLowerCase(), 3, {from:web3.eth.defaultAccount});
+    console.log('setting roles');
+}
+
 function createSale() {
     var shipia = Shipia.deployed();
     var buyer = $("#buyer").val().toLowerCase();
@@ -77,9 +87,12 @@ function createSale() {
     var price = $("#price").val();
     var description = $("#cargo").val();
 
-    console.log("createSale:", shipia, buyer, seller, price, description);
-    shipia.initSale(buyer, seller, price, description, {from: web3.eth.defaultAccount}).then(function () {
+    console.log("createSale:", seller, buyer, price, description);
+    shipia.initSale(seller, buyer, price, description, {from: web3.eth.defaultAccount}).then(function (err,res) {
+        console.log(err,res);
         alert('sale created!');
+    }).catch(function(err) {
+        console.log(err);
     });
 }
 

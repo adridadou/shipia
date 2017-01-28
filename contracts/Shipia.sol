@@ -3,6 +3,8 @@ pragma solidity ^0.4.8;
 contract Shipia {
 
     address owner;
+    address buyer;
+    address seller;
     ContractStatus status;
     uint price;
     string description;
@@ -39,12 +41,14 @@ contract Shipia {
 
     }
 
-    function initSale(address seller, address buyer, uint _price, string cargoDescription) roleOnly(buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
+    function initSale(address _seller, address _buyer, uint _price, string cargoDescription) roleOnly(_buyer, UserRole.Buyer) roleOnly(msg.sender, UserRole.Seller) {
         if(msg.sender != seller) throw;
         if(status != ContractStatus.Draft) throw;
         price = _price;
         description = cargoDescription;
         status = ContractStatus.Initialized;
+        buyer = _buyer;
+        seller = _seller;
     }
 
     function acceptSale() payable roleOnly(msg.sender, UserRole.Buyer) {
@@ -107,6 +111,14 @@ contract Shipia {
 
     function getOwner() constant returns (address) {
         return owner;
+    }
+
+    function getBuyer() constant returns (address) {
+       return buyer;
+    }
+
+    function getSeller() constant returns (address) {
+        return seller;
     }
 
     function setOwner(address newOwner) {

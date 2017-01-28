@@ -36,6 +36,6 @@ function createSale() {
 
   console.log("createSale:", shipia, buyer, seller, price, description);
   shipia.initSale(buyer, seller, price, description, {from:web3.eth.defaultAccount}).then(function() {
-      console.log('sale created!');
+      alert('sale created!');
   });
 }

@@ -4,10 +4,19 @@ var currentRole;
 
 function initSeller() {
     initCommon('seller');
+    $("#seller").val(web3.eth.defaultAccount);
 }
 
-function intBuyer() {
+function initBuyer() {
     initCommon('buyer');
+    var shipia = Shipia.deployed();
+    shipia.getPrice().then(function(r) {
+        $("#price").val(r.toNumber());
+    });
+
+    shipia.getDescription().then(function(r) {
+        $("#cargo").val(r);
+    })
 }
 
 function initIndex() {
@@ -46,7 +55,7 @@ function initCommon(status) {
        }
     });
   });
-};
+}
 
 function init() {
     var shipia = Shipia.deployed();
@@ -62,16 +71,17 @@ function init() {
 }
 
 function createSale() {
-  var shipia = Shipia.deployed();
-  var buyer = $("#buyer").val().toLowerCase();
-  var seller = $("#seller").val().toLowerCase();
-  var price = $("#price").val();
-  var description = $("#cargo").val();
+    var shipia = Shipia.deployed();
+    var buyer = $("#buyer").val().toLowerCase();
+    var seller = $("#seller").val().toLowerCase();
+    var price = $("#price").val();
+    var description = $("#cargo").val();
 
-  console.log("createSale:", shipia, buyer, seller, price, description);
-  shipia.initSale(buyer, seller, price, description, {from:web3.eth.defaultAccount}).then(function() {
-      alert('sale created!');
-  });
+    console.log("createSale:", shipia, buyer, seller, price, description);
+    shipia.initSale(buyer, seller, price, description, {from: web3.eth.defaultAccount}).then(function () {
+        alert('sale created!');
+    });
+}
 
 function acceptSale() {
   var shipia = Shipia.deployed();
@@ -83,5 +93,20 @@ function acceptSale() {
   console.log("acceptSale:", shipia, buyer, seller, price, description);
   shipia.acceptSale({from:web3.eth.defaultAccount}).then(function() {
       alert('sale accepted!');
-  }); 
+  });
+}
+
+function fullReport() {
+    var shipia = Shipia.deployed();
+    shipia.getContractStatus().then(function(r) {
+        console.log('contract status:' + r.toNumber());
+    });
+
+    shipia.getDescription().then(function(r) {
+        console.log('description:' + r);
+    });
+
+    shipia.getPrice().then(function(r) {
+        console.log('price:' + r.toNumber());
+    })
 }

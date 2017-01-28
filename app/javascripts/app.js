@@ -6,7 +6,25 @@ function initIndex() {
     initCommon('index');
 }
 
-function initCommon(status) {
+function getRoleDescription(role) {
+    switch(role) {
+        case 1 : return 'Importer';
+        case 2 : return 'Exporter';
+        case 3 : return 'Shipping company';
+        default : return 'Unknown ' + role;
+    }
+}
+
+function initIssue(){
+    var shipia = Shipia.deployed();
+    shipia.getBillOwner().then(function(owner){
+        shipia.getRole(owner).then(function(role){
+            $("#issueOwner").text(getRoleDescription(role.toNumber()));
+        });
+    });
+}
+
+function initCommon() {
   web3.eth.getAccounts(function(err, accs) {
     if (err != null) {
       alert("There was an error fetching your accounts.");

@@ -1,13 +1,14 @@
 var accounts;
 var account;
 var currentRole;
+var billOwner;
 
 var exporterName = 'Zhaolin Diapers Ltd. (EXPORTER)';
 var importerName = 'Gogola Belgium ltd (IMPORTER)';
 var shipperName = 'Rando Shipping (SHIPPER)';
 
 function initIndex() {
-    initCommon('index');
+    setInterval(initCommon, 500);
 }
 
 function getRoleDescription(role) {
@@ -22,17 +23,20 @@ function getRoleDescription(role) {
 function initIssue(){
     web3.eth.getAccounts(function() {
         var shipia = Shipia.deployed();
-        shipia.getBillOwner().then(function(owner){
-            shipia.getRole(owner).then(function(role){
-                $("#issueOwner").text(getRoleDescription(role.toNumber()));
-            });
-        });
-
         setInterval(function() {
             shipia.getRole(web3.eth.defaultAccount).then(function(role) {
                 currentRole = role.toNumber();
                 $("#issueLogin").text(getRoleDescription(currentRole));
+                $("#issueButton").prop('disabled', currentRole !== 3);
             });
+
+            shipia.getBillOwner().then(function(owner){
+                billOwner = owner;
+                shipia.getRole(owner).then(function(role){
+                    $("#issueOwner").text(getRoleDescription(role.toNumber()));
+                });
+            });
+
         }, 1000);
     });
 }
@@ -48,6 +52,9 @@ function initTransfer(){
             });
 
             shipia.getBillOwner().then(function(owner){
+
+                $("#transferButton").prop('disabled', owner !== web3.eth.defaultAccount);
+
                 shipia.getRole(owner).then(function(role){
                     $("#transferOwner").text(getRoleDescription(role.toNumber()));
                 });
@@ -81,29 +88,47 @@ function initCommon() {
     shipia.getRole(web3.eth.defaultAccount).then(function(role) {
        currentRole = role.toNumber();
        $("#indexLogin").text(getRoleDescription(currentRole));
-       switch(currentRole) {
-           case 1 : $("#exporterButton").hide();
-               shipia.getBuyer().then(function(r) {
-                   $("#buyer").val(r);
-               });
-               shipia.getSeller().then(function(r) {
-                   $("#seller").val(r);
-               });
-               shipia.getPrice().then(function(r) {
-                   $("#price").val(r.toNumber());
-               });
+        shipia.getSeller().then(function(r) {
+            $("#seller").val(r);
+        });
+        shipia.getBuyer().then(function(r) {
+            $("#buyer").val(r);
+        });
+        shipia.getPrice().then(function(r) {
+            $("#price").val(r.toNumber());
+        });
+        shipia.getDescription().then(function(r) {
+            $("#cargo").val(r);
+        });
 
-               shipia.getDescription().then(function(r) {
-                   $("#cargo").val(r);
-               });
-           break;
-           case 2 : $("#importerButton").hide();
-               $("#seller").val(web3.eth.defaultAccount);
-           break;
-           default:
-               console.log('unknown role id:' + currentRole);
-               break;
-       }
+        shipia.getContractStatus().then(function(status) {
+            switch(status.toNumber()) {
+                case 1: //Draft
+                    $("#buyer").prop('disabled', currentRole !== 2);
+                    $("#seller").prop('disabled', currentRole !== 2);
+                    $("#price").prop('disabled', currentRole !== 2);
+                    $("#cargo").prop('disabled', currentRole !== 2);
+                    $("#exporterButton").prop('disabled', currentRole !== 2);
+                    $("#importerButton").prop('disabled', true);
+                    break;
+                case 2: //Initialized
+                    $("#buyer").prop('disabled', true);
+                    $("#seller").prop('disabled', true);
+                    $("#price").prop('disabled', true);
+                    $("#cargo").prop('disabled', true);
+                    $("#exporterButton").prop('disabled', true);
+                    $("#importerButton").prop('disabled', currentRole !== 1);
+                    break;
+                default: //Rest of status
+                    $("#buyer").prop('disabled', true);
+                    $("#seller").prop('disabled', true);
+                    $("#price").prop('disabled', true);
+                    $("#cargo").prop('disabled', true);
+                    $("#exporterButton").prop('disabled', true);
+                    $("#importerButton").prop('disabled', true);
+                    break;
+            }
+        });
     });
   });
 }

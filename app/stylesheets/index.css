@@ -4,7 +4,7 @@ body{
 }
 #index-wrapper{
     height: 1669px;
-    background: url(../index.jpg) no-repeat top center;
+    background: url(images/index.jpg) no-repeat top center;
     position: relative;
 }
 *{

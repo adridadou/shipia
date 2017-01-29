@@ -9,6 +9,15 @@ module.exports = {
     "app.css": [
       "stylesheets/app.css"
     ],
+    "index.css": [
+        "stylesheets/index.css"
+    ],
+    "issue.css": [
+        "stylesheets/issue.css"
+    ],
+    "transfer.css": [
+        "stylesheets/transfer.css"
+    ],
     "images/": "images/"
   },
   rpc: {

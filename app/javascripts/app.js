@@ -24,10 +24,17 @@ function initIssue(){
     web3.eth.getAccounts(function() {
         var shipia = Shipia.deployed();
         setInterval(function() {
-            shipia.getRole(web3.eth.defaultAccount).then(function(role) {
-                currentRole = role.toNumber();
-                $("#issueLogin").text(getRoleDescription(currentRole));
-                $("#issueButton").prop('disabled', currentRole !== 3);
+            shipia.getContractStatus().then(function(status) {
+                shipia.getRole(web3.eth.defaultAccount).then(function(role) {
+                    currentRole = role.toNumber();
+                    $("#issueLogin").text(getRoleDescription(currentRole));
+                    if(currentRole === 3 && status.toNumber() === 3) {
+                        $("#issueButton").show();
+                    }else {
+                        $("#issueButton").hide();
+                    }
+
+                });
             });
 
             shipia.getBillOwner().then(function(owner){
@@ -52,8 +59,11 @@ function initTransfer(){
             });
 
             shipia.getBillOwner().then(function(owner){
-
-                $("#transferButton").prop('disabled', owner !== web3.eth.defaultAccount);
+                if(owner === web3.eth.defaultAccount) {
+                    $("#transferButton").show();
+                }else {
+                    $("#transferButton").hide();
+                }
 
                 shipia.getRole(owner).then(function(role){
                     $("#transferOwner").text(getRoleDescription(role.toNumber()));
@@ -88,44 +98,82 @@ function initCommon() {
     shipia.getRole(web3.eth.defaultAccount).then(function(role) {
        currentRole = role.toNumber();
        $("#indexLogin").text(getRoleDescription(currentRole));
-        shipia.getSeller().then(function(r) {
-            $("#seller").val(r);
-        });
-        shipia.getBuyer().then(function(r) {
-            $("#buyer").val(r);
-        });
-        shipia.getPrice().then(function(r) {
-            $("#price").val(r.toNumber());
-        });
-        shipia.getDescription().then(function(r) {
-            $("#cargo").val(r);
-        });
 
         shipia.getContractStatus().then(function(status) {
             switch(status.toNumber()) {
                 case 1: //Draft
+                    if(currentRole !== 2) {
+                        shipia.getSeller().then(function(r) {
+                            $("#seller").val(r);
+                        });
+                        shipia.getBuyer().then(function(r) {
+                            $("#buyer").val(r);
+                        });
+                        shipia.getPrice().then(function(r) {
+                            $("#price").val(r.toNumber());
+                        });
+                        shipia.getDescription().then(function(r) {
+                            $("#cargo").val(r);
+                        });
+                    }else {
+                        $("#seller").val(web3.eth.defaultAccount);
+                    }
                     $("#buyer").prop('disabled', currentRole !== 2);
                     $("#seller").prop('disabled', currentRole !== 2);
                     $("#price").prop('disabled', currentRole !== 2);
                     $("#cargo").prop('disabled', currentRole !== 2);
-                    $("#exporterButton").prop('disabled', currentRole !== 2);
-                    $("#importerButton").prop('disabled', true);
+                    if(currentRole === 2) {
+                        $("#exporterButton").show();
+                    }else {
+                        $("#exporterButton").hide();
+                    }
+
+                    $("#importerButton").hide();
                     break;
                 case 2: //Initialized
+                    shipia.getSeller().then(function(r) {
+                        $("#seller").val(r);
+                    });
+                    shipia.getBuyer().then(function(r) {
+                        $("#buyer").val(r);
+                    });
+                    shipia.getPrice().then(function(r) {
+                        $("#price").val(r.toNumber());
+                    });
+                    shipia.getDescription().then(function(r) {
+                        $("#cargo").val(r);
+                    });
                     $("#buyer").prop('disabled', true);
                     $("#seller").prop('disabled', true);
                     $("#price").prop('disabled', true);
                     $("#cargo").prop('disabled', true);
-                    $("#exporterButton").prop('disabled', true);
-                    $("#importerButton").prop('disabled', currentRole !== 1);
+                    $("#exporterButton").hide();
+                    if(currentRole === 1) {
+                        $("#importerButton").show();
+                    }else {
+                        $("#importerButton").hide();
+                    }
+
                     break;
                 default: //Rest of status
+                    shipia.getSeller().then(function(r) {
+                        $("#seller").val(r);
+                    });
+                    shipia.getBuyer().then(function(r) {
+                        $("#buyer").val(r);
+                    });
+                    shipia.getPrice().then(function(r) {
+                        $("#price").val(r.toNumber());
+                    });
+                    shipia.getDescription().then(function(r) {
+                        $("#cargo").val(r);
+                    });
                     $("#buyer").prop('disabled', true);
                     $("#seller").prop('disabled', true);
                     $("#price").prop('disabled', true);
                     $("#cargo").prop('disabled', true);
-                    $("#exporterButton").prop('disabled', true);
-                    $("#importerButton").prop('disabled', true);
+                    $("#exporterButton").hide();
+                    $("#importerButton").hide();
                     break;
             }
         });
@@ -193,13 +241,9 @@ function createSale() {
 
 function acceptSale() {
   var shipia = Shipia.deployed();
-  var buyer = $("#buyer").val().toLowerCase();
-  var seller = $("#seller").val().toLowerCase();
   var price = $("#price").val();
-  var description = $("#cargo").val();
-
-  console.log("acceptSale:", shipia, buyer, seller, price, description);
-  shipia.acceptSale({from:web3.eth.defaultAccount}).then(function() {
+  console.log("acceptSale:", price);
+  shipia.acceptSale({from:web3.eth.defaultAccount, value:parseInt(price)}).then(function() {
       alert('sale accepted!');
   });
 }
@@ -233,6 +277,9 @@ function transferBill() {
     console.log("transferBill:", shipia);
     shipia.getBuyer().then(function(owner){
         shipia.transferBill(owner, {from: web3.eth.defaultAccount}).then(function(){
+            shipia.withdraw({from: web3.eth.defaultAccount}).then(function() {
+                alert('money transfered!');
+            })
         });
     });
 }

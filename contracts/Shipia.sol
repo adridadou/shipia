@@ -79,10 +79,6 @@ contract Shipia {
                 status = ContractStatus.Done;
             }
         }
-
-        if(roles[msg.sender] == UserRole.Buyer) {
-            //Check if it is time to give the money back to the Buyer
-        }
     }
 
     function getPrice() constant returns (uint) {

@@ -2,25 +2,57 @@ var accounts;
 var account;
 var currentRole;
 
+var exporterName = 'Zhaolin Diapers Ltd. (EXPORTER)';
+var importerName = 'Gogola Belgium ltd (IMPORTER)';
+var shipperName = 'Rando Shipping (SHIPPER)';
+
 function initIndex() {
     initCommon('index');
 }
 
 function getRoleDescription(role) {
     switch(role) {
-        case 1 : return 'Importer';
-        case 2 : return 'Exporter';
-        case 3 : return 'Shipping company';
-        default : return 'Unknown ' + role;
+        case 1 : return importerName;
+        case 2 : return exporterName;
+        case 3 : return shipperName;
+        default : return '-';
     }
 }
 
 function initIssue(){
-    var shipia = Shipia.deployed();
-    shipia.getBillOwner().then(function(owner){
-        shipia.getRole(owner).then(function(role){
-            $("#issueOwner").text(getRoleDescription(role.toNumber()));
+    web3.eth.getAccounts(function() {
+        var shipia = Shipia.deployed();
+        shipia.getBillOwner().then(function(owner){
+            shipia.getRole(owner).then(function(role){
+                $("#issueOwner").text(getRoleDescription(role.toNumber()));
+            });
         });
+
+        setInterval(function() {
+            shipia.getRole(web3.eth.defaultAccount).then(function(role) {
+                currentRole = role.toNumber();
+                $("#issueLogin").text(getRoleDescription(currentRole));
+            });
+        }, 1000);
+    });
+}
+
+function initTransfer(){
+    web3.eth.getAccounts(function() {
+        var shipia = Shipia.deployed();
+
+        setInterval(function() {
+            shipia.getRole(web3.eth.defaultAccount).then(function(role) {
+                currentRole = role.toNumber();
+                $("#transferLogin").text(getRoleDescription(currentRole));
+            });
+
+            shipia.getBillOwner().then(function(owner){
+                shipia.getRole(owner).then(function(role){
+                    $("#transferOwner").text(getRoleDescription(role.toNumber()));
+                });
+            });
+        }, 1000);
     });
 }
 
@@ -36,11 +68,19 @@ function initCommon() {
       return;
     }
 
+      setInterval(function() {
+          shipia.getRole(web3.eth.defaultAccount).then(function(role) {
+              currentRole = role.toNumber();
+              $("#indexLogin").text(getRoleDescription(currentRole));
+          });
+      }, 1000);
+
     accounts = accs;
     account = accounts[0];
     var shipia = Shipia.deployed();
     shipia.getRole(web3.eth.defaultAccount).then(function(role) {
        currentRole = role.toNumber();
+       $("#indexLogin").text(getRoleDescription(currentRole));
        switch(currentRole) {
            case 1 : $("#exporterButton").hide();
                shipia.getBuyer().then(function(r) {
@@ -64,7 +104,6 @@ function initCommon() {
                console.log('unknown role id:' + currentRole);
                break;
        }
-
     });
   });
 }
@@ -86,7 +125,6 @@ function init() {
             console.log('setting roles');
         });
     });
-
 }
 
 function setOwner() {
@@ -161,7 +199,6 @@ function createBill() {
     console.log("createBill:", shipia);
     shipia.getSeller().then(function(owner) {
         shipia.createBill(owner, {from: web3.eth.defaultAccount}).then(function(){
-            window.location.reload();
         });
     });
 }
@@ -171,7 +208,6 @@ function transferBill() {
     console.log("transferBill:", shipia);
     shipia.getBuyer().then(function(owner){
         shipia.transferBill(owner, {from: web3.eth.defaultAccount}).then(function(){
-            window.location.reload();
         });
     });
 }
